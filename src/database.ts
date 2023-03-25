@@ -1,4 +1,3 @@
-import { table } from "node:console";
 import fs from "node:fs/promises";
 
 const databasePath = new URL("../db.json", import.meta.url);
@@ -26,7 +25,7 @@ export class Database {
   }
 
   select(table:any, id?: string): IDatabase[] {
-    let data = this.#database[table] ?? [];
+    let data:any = this.#database[table] ?? [];
 
     if (id) {
       data = data.find((row: any) => {

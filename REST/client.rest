@@ -1,26 +1,36 @@
-### Buscar todo os ID
-GET http://localhost:3333/user
-
-### Buscar ID especifico
-GET http://localhost:3333/user/a05172be-8ce6-4e0b-b889-220177c06282
-
-### Inserir Informação no banco
-POST http://localhost:3333/user/
+### Cadastrar Usuário / Conta
+POST  http://localhost:3000/user/ HTTP/1.1
 content-type: application/json
-
 {
-"name": "FEMA 2", "curso": "Tecnico em Informatica", "email":"fema@fema.com", "uc":"Programação WEB 3"
+  "name": "Jorge",
+  "email": "jorge@igiveup.com"
 }
 
-### Deletar um usuario do banco
-DELETE http://localhost:3333/user/a05172be-8ce6-4e0b-b889-220177c06282
-
-### Atualizar um usuário e um ID no Banco.
-
-PUT http://localhost:3333/user/08005ae2-d0f1-4d89-a0dd-1259189e1a76
+### Alterar Usuário / Conta
+PUT http://localhost:3000/user/ HTTP/1.1
 content-type: application/json
-
 {
-"name": "Adriano Silva Santos",
-"email":"adriano.s.santos@fema.com"
+  "name": "Jonas",
+  "email": "jonasbrother@igiveup.com"
 }
+
+### Deletar Usuário / Conta
+DELETE http://localhost:3000/user
+
+### Usuário
+GET http://localhost:3000/user/
+
+### Cadastrar o Depósito
+PUT http://localhost:3000/user/deposit/
+content-type: application/json
+{
+
+}
+### Cadastrar a Retirada
+PUT http://localhost:3000/user/withdraw/
+
+### Extrato da conta
+GET http://localhost:3000/user/extract/
+
+### Saldo da conta
+GET http://localhost:3000/user/balance/

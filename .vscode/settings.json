@@ -1,6 +1,7 @@
 {
     "cSpell.ignoreWords": [
-        "CLIENTE"
+        "CLIENTE",
+        "codepaths"
     ],
     "cSpell.words": [
         "Alunos",
@@ -12,6 +13,7 @@
         "indo",
         "Parâmetro",
         "Parâmetrp",
+        "tsbuildinfo",
         "vindo"
     ]
 }

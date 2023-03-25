@@ -68,7 +68,10 @@ userRoute.put('/:id', (request, response) => {
   if (userExist === undefined)
   return response.status(400).json({ msg: "Usuário não encontrado!" });
 
-  database.update(table, id, {name, email})
+  database.update(table, id, {
+    name, email,
+    id: ""
+  })
 
   response
     .status(201)
