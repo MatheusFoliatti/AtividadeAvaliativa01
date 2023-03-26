@@ -1,81 +1,131 @@
 import { Router } from "express";
-import { randomUUID } from "node:crypto";
-import { Database } from "../database";
+import { Database } from '../database';
+import { randomUUID } from 'node:crypto';
 
-const userRoute = Router()
+const userRoute = Router();
 
 const database = new Database();
 
 const table = "user";
 
-userRoute.get("/", (request, response) => {
+// Request - Requisição
+// Response - Resposta
+userRoute.get('/', (request, response ) => {
+
   const user = database.select(table);
-  response.json(user);
+
+  response.json(user)
 });
 
-userRoute.get("/:id", (request, response) => {
-  const { id } = request.params;
+userRoute.get('/:id', (request, response) => {
+  const {id} = request.params
 
-  const result = database.select(table, id);
+ const result = database.select(table, id,);
 
-  // console.log(result, " - ", typeof result);
+ if(result === undefined) response.status(400).json({msg:'User not found'})
 
-  if (result === undefined)
-    response.status(400).json({ msg: "Usuário não encontrado!" });
+  response.json(result)
+})
 
-  response.json(result);
-});
+//Adicionar um usuário
+userRoute.post('/', (request, response ) => {
+const {name, saldo ,transicao} = request.body;
 
-// Parâmetro que esta vindo do CLIENTE - REQUEST
-// Parâmetro que esta indo para o CLIENTE - RESPONSE
-
-userRoute.post("/", (request, response) => {
-  const { name, email } = request.body;
-
-  const user = {
-    id: randomUUID(),
-    name: name,
-    email,
+const user = {
+  id: randomUUID(),
+  name,
+  saldo,
+  transicao
   };
 
   database.insert(table, user);
 
-  response.status(201).json({ msg: "sucesso!" });
+response.status(201).send({msg:'ok'});
 });
 
-userRoute.delete("/:id", (request, response) => {
-  const { id } = request.params;
+// Deletar pelo ID
+userRoute.delete('/:id', (request, response) => {
+  const {id} = request.params
 
   const userExist:any = database.select(table, id);
 
-  // console.log(result, " - ", typeof result);
+  if(userExist === undefined)
+  return response.status(400).json(
+    {msg:'User not found'});
 
-  if (userExist === undefined)
-    return response.status(400).json({ msg: "Usuário não encontrado!" });
+    database.delete(table, id)
 
-  database.delete(table, id);
-
-  response
-    .status(202)
-    .json({ msg: `Usuário ${userExist.name} foi deletado do banco` });
+    response.status(202).json(
+      {msg: `O usuário ${userExist.name} foi deletado com sucesso!` });
 });
 
-userRoute.put('/:id', (request, response) => {
-  const { id } = request.params
-  const { name, email } = request.body
+// Editar o Usuário pelo ID
+userRoute.put('/:id', (request,response)=>{
+
+  const {id} = request.params
+  const {name, saldo, transicao} = request.body
 
   const userExist:any = database.select(table, id);
-  if (userExist === undefined)
-  return response.status(400).json({ msg: "Usuário não encontrado!" });
 
-  database.update(table, id, {
-    name, email,
-    id: ""
-  })
+  if(userExist === undefined)
+  return response.status(400).json(
+    {msg:'User not found'});
 
-  response
-    .status(201)
-    .json({ msg: `Usuário ${userExist.name} foi alterado no banco` });
-} )
+    database.update(table, id, {id, name, saldo, transicao})
 
-export { userRoute }
+    response.status(201).json(
+      {msg: `O usuário ${userExist.name} foi atualizado!` });
+
+})
+
+// Retirada do saldo pelo ID
+userRoute.put('/retirada/:id', (request,response)=>{
+
+  const {id} = request.params
+  const {name, transicao: [{ tipo, valor }]} = request.body
+
+  const userExist:any = database.select(table, id);
+
+  if(userExist === undefined)
+  return response.status(400).json(
+    {msg:'User not found'});
+
+    let transicao = userExist.transicao
+    transicao.push({ tipo, valor })
+    console.log(transicao)
+    let saldo = userExist.saldo
+    database.update(table, id, { id, name, saldo: saldo - valor, transicao })
+
+    response.status(201).json(
+      {msg: ` Você retirou R$${valor} reais` });
+
+})
+
+// Deposito do saldo pelo ID
+userRoute.put('/deposito/:id', (request,response)=>{
+
+  const {id} = request.params
+  const {name, transicao: [{ tipo, valor}]} = request.body
+
+  const userExist:any = database.select(table, id);
+
+  if(userExist === undefined)
+  return response.status(400).json(
+    {msg:'User not found'});
+
+    let transicao = userExist.transicao
+    transicao.push({tipo, valor})
+    console.log(transicao)
+    let saldo = userExist.saldo
+    database.update(table, id, {id, name, saldo: saldo + valor, transicao})
+
+    response.status(201).json(
+      {msg: ` Você depositou R$${valor} reais` });
+})
+
+userRoute.get('/', (request, response)=>{
+
+  response.send(`Rota userRote ON.`)
+})
+
+export {userRoute}

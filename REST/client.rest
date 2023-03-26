@@ -1,36 +1,45 @@
-### Cadastrar Usuário / Conta
-POST  http://localhost:3000/user/ HTTP/1.1
-content-type: application/json
-{
-  "name": "Jorge",
-  "email": "jorge@igiveup.com"
-}
-
-### Alterar Usuário / Conta
-PUT http://localhost:3000/user/ HTTP/1.1
-content-type: application/json
-{
-  "name": "Jonas",
-  "email": "jonasbrother@igiveup.com"
-}
-
-### Deletar Usuário / Conta
-DELETE http://localhost:3000/user
-
-### Usuário
+### Todos os Usuários
 GET http://localhost:3000/user/
 
-### Cadastrar o Depósito
-PUT http://localhost:3000/user/deposit/
+### Saldo e Extrato do usuário
+GET http://localhost:3000/user/bd9cf391-ca2a-4dad-9d92-07e61ff23491
+
+### Cadastrar Usuário
+POST http://localhost:3000/user/
+
 content-type: application/json
 {
-
+"name": "Jorge", "saldo": 0, "transicao": []
 }
-### Cadastrar a Retirada
-PUT http://localhost:3000/user/withdraw/
 
-### Extrato da conta
-GET http://localhost:3000/user/extract/
+### Depósito para o ID do Usuário
+PUT http://localhost:3000/user/deposito/397407bc-52a6-4184-8651-17c576787b37
 
-### Saldo da conta
-GET http://localhost:3000/user/balance/
+content-type: application/json
+{
+"name": "Jonas", "transicao":
+[ {"tipo": "deposito", "valor": 100} ]
+}
+
+### Retirada para o ID do Usuário
+PUT http://localhost:3000/user/retirada/397407bc-52a6-4184-8651-17c576787b37
+
+content-type: application/json
+{
+"name": "Jonas", "transicao":
+[ {"tipo": "retirada", "valor": 100} ]
+}
+
+### Deletar usuário pelo ID
+DELETE http://localhost:3000/user/bd9cf391-ca2a-4dad-9d92-07e61ff23491
+
+### Atualizar um usuário pelo ID
+PUT http://localhost:3000/user/b34be576-9fef-4ed5-a7cc-7b647234933b
+
+content-type: application/json
+{
+"name": "João", "saldo": 0, "transicao": [{}]
+}
+
+### Usar ID para encontrar o Usuário
+GET http://localhost:3000/user/b34be576-9fef-4ed5-a7cc-7b647234933b
