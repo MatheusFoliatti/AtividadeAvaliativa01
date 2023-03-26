@@ -41,5 +41,5 @@ content-type: application/json
 "name": "João", "saldo": 0, "transicao": [{}]
 }
 
-### Usar ID para encontrar o Usuário
-GET http://localhost:3000/user/b34be576-9fef-4ed5-a7cc-7b647234933b
+### Buscar IDs
+GET http://localhost:3000/user/491d7eb5-7b9f-4666-adb3-56a67868cd88

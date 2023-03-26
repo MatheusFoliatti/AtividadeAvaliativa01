@@ -19,10 +19,13 @@ userRoute.get('/', (request, response ) => {
 
 userRoute.get('/:id', (request, response) => {
   const {id} = request.params
+  const {name, saldo ,transicao} = request.body;
 
  const result = database.select(table, id,);
 
  if(result === undefined) response.status(400).json({msg:'User not found'})
+
+ database.update(table, id, {id, name, saldo, transicao})
 
   response.json(result)
 })
