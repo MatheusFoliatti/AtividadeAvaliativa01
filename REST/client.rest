@@ -1,45 +1,54 @@
-### Todos os Usuários
+### Todos os IDs
 GET http://localhost:3000/user/
 
-### Saldo e Extrato do usuário
-GET http://localhost:3000/user/bd9cf391-ca2a-4dad-9d92-07e61ff23491
+### Extrato e saldo do usuário
+GET http://localhost:3000/user/757e59ad-ddbd-4ee6-9102-97944678cbc6
 
 ### Cadastrar Usuário
 POST http://localhost:3000/user/
-
 content-type: application/json
+
 {
-"name": "Jorge", "saldo": 0, "transicao": []
+    "name": "Dionatan",
+    "cpf":"123.456.420-00",
+    "cep":"98780080",
+    "cidade":"Santa Rosa",
+    "saldo": 0,
+    "transacao": []
+
 }
 
-### Depósito para o ID do Usuário
-PUT http://localhost:3000/user/deposito/397407bc-52a6-4184-8651-17c576787b37
-
+### Depositar na conta do usuário
+PUT  http://localhost:3000/user/deposito/757e59ad-ddbd-4ee6-9102-97944678cbc6
 content-type: application/json
+
 {
-"name": "Jonas", "transicao":
-[ {"tipo": "deposito", "valor": 100} ]
+    "tipo": "deposito",
+    "valor": 100
+
 }
 
-### Retirada para o ID do Usuário
-PUT http://localhost:3000/user/retirada/397407bc-52a6-4184-8651-17c576787b37
-
+### Retirar da conta do usuário
+PUT  http://localhost:3000/user/retirada/757e59ad-ddbd-4ee6-9102-97944678cbc6
 content-type: application/json
+
 {
-"name": "Jonas", "transicao":
-[ {"tipo": "retirada", "valor": 100} ]
+
+    "tipo": "retirada",
+    "valor": 50
+
 }
 
-### Deletar usuário pelo ID
-DELETE http://localhost:3000/user/bd9cf391-ca2a-4dad-9d92-07e61ff23491
+### Deletar usuário
+DELETE http://localhost:3000/user/757e59ad-ddbd-4ee6-9102-97944678cbc6
 
-### Atualizar um usuário pelo ID
-PUT http://localhost:3000/user/b34be576-9fef-4ed5-a7cc-7b647234933b
-
+### Atualizar um usuario pelo ID
+PUT  http://localhost:3000/user/f3614955-80b8-4a2b-969b-9750780efcfe
 content-type: application/json
-{
-"name": "João", "saldo": 0, "transicao": [{}]
-}
 
-### Buscar IDs
-GET http://localhost:3000/user/491d7eb5-7b9f-4666-adb3-56a67868cd88
+{
+    "name": "Lucas",
+    "cpf":"123.456.420-00",
+    "cep":"98780080",
+    "cidade":"Santa Rosa"
+}

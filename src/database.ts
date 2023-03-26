@@ -3,14 +3,15 @@ import fs from 'node:fs/promises'
 const databasePath = new URL('../db.json', import.meta.url)
 
 export class Database {
-  #database:any = [];
+  #database:any = {};
 
   constructor(){
     fs.readFile(databasePath, 'utf8')
     .then(data => {
       this.#database = JSON.parse(data)
-    }).catch(() => {
-      fs.writeFile(databasePath, JSON.stringify({}, null, 2))
+    })
+    .catch(() => {
+      this.#persist();
     })
   }
 
@@ -19,7 +20,6 @@ export class Database {
   //Stringfy = Converte um objeto para uma string
 
   #persist(){
-
     fs.writeFile(databasePath, JSON.stringify(this.#database, null, 2))
   }
 
@@ -47,26 +47,25 @@ export class Database {
     return data
   }
 
-  delete(table:any, id:string): void{
+  delete(table: string, id: string) {
+    const rowIndex = this.#database[table].findIndex(
+      (row: any) => row.id === id
+    );
 
-    //Procura o ID para deletar
-    const rowIndex  = this.#database[table].findIndex((row:any) => row.id === id)
-
-    //Valida o ID e então deleta
-    if(rowIndex > -1){
-      this.#database[table].slice(rowIndex, 1);
+    if (rowIndex > -1) {
+      this.#database[table].splice(rowIndex, 1);
       this.#persist();
     }
   }
 
-  update(table:any, id:string, data:object): void{
+  update(table: string, id: string, data: object) {
 
-    const rowIndex = this.#database[table].findIndex((row:any)=> row.id === id);
+    const rowIndex = this.#database[table].findIndex(
+      (row:any)=> row.id === id);
 
     if(rowIndex > -1) {
-      this.#database[table][rowIndex] = data
-
-      this.#persist()
+      this.#database[table][rowIndex] = {id, ...data };
+      this.#persist();
     }
 
   }

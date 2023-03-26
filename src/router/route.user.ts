@@ -19,111 +19,126 @@ userRoute.get('/', (request, response ) => {
 
 userRoute.get('/:id', (request, response) => {
   const {id} = request.params
-  const {name, saldo ,transicao} = request.body;
 
- const result = database.select(table, id,);
+ const result = database.select(table, id);
 
- if(result === undefined) response.status(400).json({msg:'User not found'})
-
- database.update(table, id, {id, name, saldo, transicao})
+ if(result === undefined) response.status(400).json({msg:'Usuarios nao encontrado'})
 
   response.json(result)
 })
 
-//Adicionar um usuário
+//Adicionar usuário
 userRoute.post('/', (request, response ) => {
-const {name, saldo ,transicao} = request.body;
+const {name, transacao, cep, cpf, cidade} = request.body;
 
 const user = {
   id: randomUUID(),
   name,
-  saldo,
-  transicao
+  cep,
+  cpf,
+  cidade,
+  saldo: 0,
+  transacao
   };
 
   database.insert(table, user);
 
-response.status(201).send({msg:'ok'});
+response.status(201).send({msg:'Conta Criada!'});
 });
 
-// Deletar pelo ID
+//Deletar Usuário
 userRoute.delete('/:id', (request, response) => {
   const {id} = request.params
-
   const userExist:any = database.select(table, id);
 
   if(userExist === undefined)
   return response.status(400).json(
-    {msg:'User not found'});
+    {msg:'Usuario nao encontrado'});
 
     database.delete(table, id)
 
     response.status(202).json(
-      {msg: `O usuário ${userExist.name} foi deletado com sucesso!` });
+      {msg: `Usuario ${userExist.name} deletado`});
 });
 
-// Editar o Usuário pelo ID
+//Editar Usuário
 userRoute.put('/:id', (request,response)=>{
-
   const {id} = request.params
-  const {name, saldo, transicao} = request.body
-
+  const {name, cep, cpf, cidade} = request.body
   const userExist:any = database.select(table, id);
 
   if(userExist === undefined)
   return response.status(400).json(
-    {msg:'User not found'});
+    {msg:'Usuario nao encontrado'});
 
-    database.update(table, id, {id, name, saldo, transicao})
+    //Usuário encontrado
+    const user:any = {name, cpf, cidade, cep};
 
-    response.status(201).json(
-      {msg: `O usuário ${userExist.name} foi atualizado!` });
+    const filteredUser: any = {};
+      for (const key in user) {
+        if (user[key] !== undefined) {
+      filteredUser[key] = user[key];
+    }
+  }
+    const infoDB:any = {...userExist, ...filteredUser}
+    database.update(table, id, infoDB);
 
+    response.status(202).json(
+      {msg: `Usuario ${userExist.name} alterado` });
 })
 
-// Retirada do saldo pelo ID
+//Retirar dinheiro da conta
 userRoute.put('/retirada/:id', (request,response)=>{
 
   const {id} = request.params
-  const {name, transicao: [{ tipo, valor }]} = request.body
+  const {tipo, valor} = request.body
 
   const userExist:any = database.select(table, id);
 
   if(userExist === undefined)
   return response.status(400).json(
-    {msg:'User not found'});
+    {msg:'Usuario nao encontrado'});
 
-    let transicao = userExist.transicao
-    transicao.push({ tipo, valor })
-    console.log(transicao)
+  if(userExist.saldo >= valor){
+
+    const name = userExist.name;
+
+    let transacao = userExist.transacao
+    transacao.push(tipo, valor)
     let saldo = userExist.saldo
-    database.update(table, id, { id, name, saldo: saldo - valor, transicao })
+    database.update(table, id, {name, saldo: saldo - Number(valor), transacao})
 
     response.status(201).json(
-      {msg: ` Você retirou R$${valor} reais` });
-
+      {msg: ` Foi retidado o valor de  ${valor} na conta ${name}` });
+    }
+    else{
+      response.status(404).json(
+        {msg: 'Saldo insuficiente para retirada'}
+      )
+    }
 })
 
-// Deposito do saldo pelo ID
+//Deposito da grana
 userRoute.put('/deposito/:id', (request,response)=>{
 
   const {id} = request.params
-  const {name, transicao: [{ tipo, valor}]} = request.body
+  const {tipo, valor} = request.body
 
   const userExist:any = database.select(table, id);
 
   if(userExist === undefined)
   return response.status(400).json(
-    {msg:'User not found'});
+    {msg:'Usuario nao encontrado'});
 
-    let transicao = userExist.transicao
-    transicao.push({tipo, valor})
-    console.log(transicao)
+    const name = userExist.name;
+    let transacao = userExist.transacao
+    transacao.push(tipo, valor);
     let saldo = userExist.saldo
-    database.update(table, id, {id, name, saldo: saldo + valor, transicao})
+    database.update(table, id, {name, saldo: saldo + Number(valor), transacao})
 
     response.status(201).json(
-      {msg: ` Você depositou R$${valor} reais` });
+      {msg: ` Foi depositado o valor de  ${valor} na conta ${name}` });
+
 })
 
 userRoute.get('/', (request, response)=>{

@@ -1,11 +1,11 @@
 {
-  "name": "projectbackend01",
+  "name": "project_backend01",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "tsx watch ./src/server.ts",
-    "test": "tsx ./src/test/test.01.ts"
+"test": "tsx ./src/test/test.01.ts"
   },
   "keywords": [],
   "author": "",
